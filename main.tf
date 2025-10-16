@@ -23,13 +23,13 @@ resource "aws_iam_role_policy_attachment" "basic_execution_role" {
 }
 
 resource "aws_iam_policy" "iam_role_access_permissions" {
-  count  = length(trimspace(var.additional_permissions)) > 0 ? 1 : 0
+  count  = var.create_inline_policy ? 1 : 0
+  policy = var.inline_policy_json
   name   = "${var.name_prefix}_permissions"
-  policy = var.additional_permissions
 }
 
 resource "aws_iam_role_policy_attachment" "iam_role" {
-  count      = length(trimspace(var.additional_permissions)) > 0 ? 1 : 0
+  count  = var.create_inline_policy ? 1 : 0
   role       = aws_iam_role.iam_role.name
   policy_arn = aws_iam_policy.iam_role_access_permissions[0].arn
 }
